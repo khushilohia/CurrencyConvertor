@@ -1,5 +1,5 @@
 const countryList = {
-  
+  //Counties and their currency codes
   AFN: "AF",
   XCD: "AG",
   

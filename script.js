@@ -27,22 +27,32 @@ for(let select of dropdowns) {
         UpdateFlag(evt.target);
     });
 };
-const updateExhangeRate = async ()=>{
-    let amount=document.querySelector(".amount input");
-    let amtValue=amount.value;
-    if(amtValue==="" || amtValue<0){
-        amtValue = 1;
-        amount.value=amtValue;
+const updateExhangeRate = async () => {
+    try {
+        let amount = document.querySelector(".amount input");
+        let amtValue = amount.value;
+        if (amtValue === "" || amtValue < 0) {
+            amtValue = 1;
+            amount.value = amtValue;
+        }
+        let x = fromCurrency.value.toLowerCase();
+        const URL = `${BASE_URL}/${x}.json`;
+        let response = await fetch(URL);
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch exchange rate");
+        }
+
+        let data = await response.json();
+        let rate = data[fromCurrency.value.toLowerCase()][toCurrency.value.toLowerCase()];
+        let finalAmount = amtValue * rate;
+
+        msg.innerText = `${amtValue} ${fromCurrency.value} = ${finalAmount.toFixed(3)} ${toCurrency.value}`;
+    } catch (error) {
+        msg.innerText = "Error fetching exchange rate. Please try again.";
     }
-    let x=fromCurrency.value.toLowerCase();
-    const URL = `${BASE_URL}/${x}.json`;
-    let response= await fetch(URL);
-    let data=await response.json();
-    let rate=data[fromCurrency.value.toLowerCase()][toCurrency.value.toLowerCase()];
-    let finalAmount=amtValue * rate;
-    
-    msg.innerText=`${amtValue} ${fromCurrency.value} = ${finalAmount.toFixed(3)} ${toCurrency.value}`;
-}
+};
+
 
 const UpdateFlag =(element)=>{
     let currCode = element.value;
